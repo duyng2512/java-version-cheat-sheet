@@ -1,19 +1,13 @@
-<style type="text/css">
-  body{
-  font-family: "Lucida Console", "Courier New", monospace;
-  padding: 3em;
-}
-</style>
-
 # Java 5 Overview
 Java 5 release on September 2004, with the following new feature and enhancements:
 
-* Generic
-* Enhanced for loop
-* Auto boxing and unboxing
-* Enum
-* Varargs
-
+| Feature List                                        |
+|-------------------------------------------------------|
+| [Generic](#generic)                                   |
+| [Enhanced for loop](#enhanced-for-loop)               |
+| [Auto boxing and unboxing](#auto-boxing-and-unboxing) |
+| [Enum](#enum)                                         |
+| [Varargs](#varargs)                                   |
 
 ## Generic
 - Java 6 introduce the use of **_Generic_**, using **_Generic_** offer multiple advantages that we will discus this the section bellow.
