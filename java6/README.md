@@ -205,5 +205,3 @@ public class s6main {
 }
 
 ```
-
-## New GC algorithms
