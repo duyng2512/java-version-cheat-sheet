@@ -15,7 +15,7 @@ Java 8 release on March 2014 with the following new feature and enhancements:
 ## Default and static methods in Interfaces
 - In java 8, method in interface can have **default** implementation, in stead of force class that implement them to do so. This feature is added for ensure backward compatibility.
 
-- Consider the example below, we have interface **Alert** and class ControlPanel implement them :
+- Consider the example below, we have interface **Alert** and class **ControlPanel** implement them :
 ```java
 interface Alert {
     void alarm();
@@ -28,7 +28,7 @@ class ControlPanel implements Alert {
     }
 }
 ```
-- However, after reconsider, owner of Alert interface would like to add a new method call **dismiss**:
+- Let assume after reconsidering, owner of **Alert** interface would like to add a new method call **dismiss**:
 ```java
 interface Alert {
     void alarm();
@@ -42,7 +42,7 @@ class ControlPanel implements Alert { // Compile fail
     }
 }
 ```
-- However above code will not work because **ControlPanel** not implement method **dismiss** yet. In order to don't force client code to implement every single method we can use **default** method in interface.
+- Above code will not compile because **ControlPanel** not implement method **dismiss** yet. In order to don't force client code to implement every single method we can use **default** method in interface.
 ```java
 interface Alert {
     void alarm();
@@ -60,16 +60,22 @@ class ControlPanel implements Alert {
 ```
 - This code new work because method **dismiss** now have an implementation, if client code don't intentionally override this method, the default implementation will be used.
 
+- **Note**: If a class implements 2 interfaces and all of them have a default common method than the class have to override and implement the default method itself.
+
+- In addition to declaring default methods in interfaces, Java 8 also allows us to define and implement **static** methods in interfaces. Access this method by using name interface + method name.
+
 ```java
-ControlPanel panel = new ControlPanel();
-panel.dismiss();
-// Dismiss
+public interface Arlam {
+    static printArlamMessage(){
+        System.out.println("Arlam !");
+    }
+}
+
+Arlam.printArlamMessage(); // print Arlam !
 ```
 
-
-
-
 ## Java Time API
+
 
 ## Java IO improvements
 
