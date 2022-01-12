@@ -141,6 +141,94 @@ static void testTime(){
         setString.forEach(System.out::println);
     }   
 ```
-## Functional Interfaces and Lambda Expressions
 
-## Java Stream API for Bulk Data Operations on Collections
+## Java Stream API & Lambda expression and Functional programming.
+
+### Introductory overview:
+- Java 8 introduce **Stream** API that support parallel operation to process data. **Stream** API help us to avoid synchronized, which is error-prone and more expensive in multicore CPUs. **Stream < T >** is a sequence of items of type T. Streams API has many methods that can be chained to form a complex pipeline. Java 8 can transparently run your pipeline of Stream operations on several CPU cores on disjoint parts of the input—this is parallelism almost for free instead of hard work using Threads.
+
+- Another programming concept add the java 8 is the ability to **pass a piece of code to an API**. For example we want to sort a list string by a customized function (sort by the last n letter for example), Prior to java 8 we can use **Comparator** to implement such feature, however it is quite **verbose and obfuscates**. Java 8 adds the ability to pass methods (your code) as arguments to other methods as **behavior parameterization**.
+
+- Java 8 also add feature of **parallel** into stream processing, in order to utilize parallelism for stream processing, we must provide behavior that is safe to execute concurrently on different pieces of the input, or in order words, **code that don't access shared mutable data or can be refer as pure function**. 
+
+- Java 8 streams exploit parallelism more easily than Java’s existing Threads API, so although it’s possible to use synchronized to break the no-shared-mutable-data rule, it’s fighting the system in that it’s abusing an abstraction optimized around that rule. Using synchronized across multiple processing cores is often far more expensive than you expect, because synchronization forces code to execute sequentially, which works against the goal of parallelism.
+
+![](img/1_.png)
+
+- Two of these points (**no shared mutable data and the ability to pass methods and functions—code—to other methods**) are the cornerstones of what’s generally described as the paradigm of **functional programming**. In contrast, in the imperative programming paradigm you typically describe a program in terms of a sequence of statements that mutate state. The no-shared-mutable-data requirement means that a method is perfectly described solely by the way it transforms arguments to results; in other words, it behaves as a mathematical function and has no (visible) side effects.
+
+- Another concept we should explore is **First class values** and **Second class values**, in java primitive values and objects are **First class values** and they can be **passed in method during runtime execution**. In other hand, function and classes are **second class values**. Java 8 offer us a way to pass function as first class value via method reference or using lambda syntax. 
+
+
+### Behaviour parameterize:
+- For example we have a function that sort an array of object **Apple** by their color and weight:
+```java
+class Apple {
+        int weight;
+        String color;
+    
+        // Constructor, getter, setter, toString ...
+    }
+
+    static void filter(List<Apple> list){
+        List<Apple> result = new ArrayList<>();
+        for (Apple apple : list){
+            if (apple.getColor().equals("red") || apple.getWeight() > 150){
+                result.add(apple);
+            }
+        }
+        System.out.println(result.toString());
+    }
+
+```
+- The above function filter is less readable hard to extend, what if **Apple** not only have weight and color but many many other attribute. One way to mitigate this modeling the criteria for filter **Apple** using interface
+```java
+    interface ApplePredicate {
+        boolean test(Apple apple);
+    }
+    
+    class AppleRedAndHeavyPredicate implements ApplePredicate{
+        public boolean test(Apple apple){
+            return "red".equals(apple.getColor()) && apple.getWeight() > 150;
+        }
+    }
+
+    static void filter(List<Apple> list, ApplePredicate predicate){
+        List<Apple> result = new ArrayList<>();
+        for (Apple apple : list){
+            if (predicate.test(apple)){
+                result.add(apple);
+            }
+        }
+        System.out.println(result.toString());
+    }
+    
+    public static void main(String[] args) {
+        List<Apple> list = new ArrayList<>();
+        list.add(new Apple(165, "red"));
+        list.add(new Apple(160, "green"));
+        list.add(new Apple(160, "blue"));
+
+        filter(list, new AppleRedAndHeavyPredicate());
+    }    
+```
+- This code now is a bit cleaner now, we model the sorting criteria with interface **ApplePredicate** and implement new class **AppleRedAndHeavyPredicate**, then when filter we just need to instantiate this class.
+
+- This can be even less verbose with **Anonymous class**, Java has a mechanism called anonymous classes, which let you declare and instantiate a class at the same time. They enable you to improve your code one step further by making it a little more concise.
+
+```java
+        filter(list, new ApplePredicate() {
+            @Override
+            public boolean test(Apple apple) {
+                return "red".equals(apple.getColor()) && apple.getWeight() > 150;
+            }
+        });
+```
+
+- Finally, in java 8 with lambda function, this code can be shorten as:
+```java
+    filter(list, apple -> "red".equals(apple.getColor()) && apple.getWeight() > 150);
+```
+
+
+### Lambda expressions
