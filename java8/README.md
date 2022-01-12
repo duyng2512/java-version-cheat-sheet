@@ -5,9 +5,6 @@ Java 8 release on March 2014 with the following new feature and enhancements:
 |--------------------------------------------------------------------------|
 | [Default and static methods in Interfaces](#default-and-static-methods-in-interfaces)           |
 | [Java Time API](#java-time-api)               |
-| [Java IO improvements](#java-io-improvements) |
-| [Concurrency API improvements](#concurrency-api-improvements)                                 |
-| [Collection API improvements](#collection-api-improvements)                                   |
 | [forEach() method in Iterable interface](#foreach-method-in-iterable-interface)                                       |
 | [Functional Interfaces and Lambda Expressions](#functional-interfaces-and-lambda-expressions)                         |
 | [Java Stream API for Bulk Data Operations on Collections](#java-stream-api-for-bulk-data-operations-on-collections)   |
@@ -75,16 +72,75 @@ Arlam.printArlamMessage(); // print Arlam !
 ```
 
 ## Java Time API
+- Java 8 introduce new time utility package **java.time** that handle the issue of the old **java.util** package such as:
+    - Thread safety.
+    - API design and convention.
+    - Zone time.
+    
+- **LocalDate, LocalTime and LocalDateTime** time and date without a time zone base on ISO-8601 standard.
 
+```java
+static void testTime(){
+        // construct LocalDate
+        LocalDate date = LocalDate.of(2021, Month.APRIL, 10);
+        printTime(date);
+        // construct LocalDate from string
+        LocalDate stringDate = LocalDate.parse("2022-01-12");
+        printTime(stringDate);
+        // tomorrow
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        printTime(tomorrow);
 
-## Java IO improvements
+        // now
+        LocalTime now = LocalTime.now();
+        // construct LocalTime
+        LocalTime sixThirty = LocalTime.of(6, 30);
+        // construct LocalTime from String
+        LocalTime sixThirtyString = LocalTime.parse("06:30");
+    }
 
-## Concurrency API improvements
+    static void testZoneTime(){
+        Set<String> allZoneIds = ZoneId.getAvailableZoneIds();
+        for(String zoneId : allZoneIds.toArray(String[]::new)){
+            System.out.println(zoneId);
+        }
 
-## Collection API improvements
+        ZoneId zoneId = ZoneId.of("Europe/Paris");
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.now(), zoneId);
+    }
+
+    static void testPeriod(){
+        LocalDate initialDate = LocalDate.parse("2007-05-10");
+        LocalDate finalDate = initialDate.plus(Period.ofDays(5));
+        int days = Period.between(initialDate, finalDate).getDays();
+        System.out.println("Period " + days);
+    }
+
+    static void testDuration(){
+        LocalTime initialTime = LocalTime.parse("06:30");
+        LocalTime finalTime = initialTime.plus(Duration.ofHours(5));
+        long seconds = Duration.between(initialTime, finalTime).getSeconds();
+        System.out.println("Duration " + seconds);
+    }
+
+    static void testConvertOldDate(){
+        Date oldDate = new Date();
+        LocalDate newDate = LocalDate.ofInstant(oldDate.toInstant(), ZoneId.systemDefault());
+        System.out.println(newDate.toString());
+    }
+```
 
 ## forEach method in Iterable interface
+- In java 8, class with **Iterable** interface can use **forEach(Consumer<? super T> action)** in order to perform any action for all elements of collections.
 
+```java
+    static void testForEach(){
+        List<String> listString = new ArrayList<>(Arrays.asList("TCB", "ACB", "TPC"));
+        listString.forEach(System.out::println);
+        Set<String> setString = new HashSet<>(Arrays.asList("TCB", "ACB", "TPC"));
+        setString.forEach(System.out::println);
+    }   
+```
 ## Functional Interfaces and Lambda Expressions
 
 ## Java Stream API for Bulk Data Operations on Collections
