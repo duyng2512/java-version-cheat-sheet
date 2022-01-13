@@ -232,3 +232,102 @@ class Apple {
 
 
 ### Lambda expressions
+
+> A **lambda expression** can be understood as a concise representation of an anonymous function that can be passed around: it doesn’t have a name, but it has a list of **parameters**, a **body**, a **return type**, and also possibly a list of exceptions that can be thrown
+
+
+- Lambda help developer write concise code that way readable than anonymous class. For example, using a lambda expression you can create a custom **Comparator** object in a more concise way:
+
+```java
+// Before:
+Comparator<Apple> byWeight = new Comparator<Apple>() {
+        public int compare(Apple a1, Apple a2){
+        return a1.getWeight().compareTo(a2.getWeight());
+    }
+};
+
+// After (with lambda expressions):
+
+Comparator<Apple> byWeight = (Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight());
+```
+
+- The basic syntax of a lambda is either
+```
+(parameters) -> expression
+
+or (note the curly braces for statements)
+
+(parameters) -> { statements; }
+```
+
+- For example:
+```
+1. () -> {} // valid
+2. () -> "Raoul" // valid
+3. () -> {return "Mario";} // valid
+4. (Integer i) -> return "Alan" + i; // invalid return must inside {}
+5. (String s) -> {"Iron Man";} // invalid return must inside {}
+```
+
+-  **Functional interface** is a functional interface is an interface that specifies exactly one abstract method. Only method that have parameter as **Functional Interface** than lambda can be implemented.
+
+![](img/2_.png)
+
+```java
+interface BufferProcessor {
+    String process (BufferedReader reader) throws IOException;
+}
+
+class StringReader {
+    public static String processFile(BufferProcessor processor) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
+            return processor.process(reader);
+        } catch (IOException exception){
+            exception.printStackTrace();
+            return null;
+        }
+    }
+}
+
+public class LambdaTest {
+    public static void main(String[] args) {
+        System.out.println(StringReader.processFile(p -> p.readLine() + "-" + p.readLine()));
+    }
+}
+```
+
+- **Type checking**:
+```java
+List<Apple> heavierThan150g 
+            = filter(inventory, (Apple a) -> a.getWeight() > 150);
+```
+![](img/3_.png)
+- The type-checking process is deconstructed as follows:
+    1. **First**, you look up the declaration of the filter method.
+    2. **Second**, it expects as the second formal parameter an object of type Predicate-<Apple> (the target type).
+    3. **Third**, Predicate<Apple> is a functional interface defining a single abstract method called test.
+    4. **Fourth**, the method test describes a function descriptor that accepts an Apple and returns a boolean.
+
+- **Type inference**: the Java compiler deduces what functional interface to associate with a lambda expression from its surrounding context (the target type), meaning it can also deduce an appropriate signature for the lambda because the function descriptor is available through the target type. 
+
+```java
+    public static void main(String[] args) {
+        StringReader.processFile( (BufferedReader p) -> p.readLine() 
+                                    + "-" + p.readLine()); // without type inference
+        StringReader.processFile( p -> p.readLine() + "-" + p.readLine()); // with type inference
+    }
+```
+
+- **Note**: inside lambda, we can not modify the content of local variables of a method in which the lambda is defined. Those variables have to be **implicitly** final. 
+
+> This restriction exists because local variables live on the stack and are implicitly confined to the thread they’re in. Allowing capture of mutable local variables opens new thread-unsafe possibilities, which are undesirable 
+
+- **Method references**: Method references let you reuse existing method definitions and pass them just like lambdas.  A method reference lets you create a lambda expression from an existing method implementation.
+
+```java
+// Before:
+inventory.sort((Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight()));
+
+// After (using a method reference and java.util.Comparator.comparing):
+inventory.sort(comparing(Apple::getWeight));
+```
