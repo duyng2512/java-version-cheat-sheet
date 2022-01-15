@@ -198,6 +198,25 @@ public static int sum (List<Integer> ints) {
 }
 ```
 
+- We should be careful to using Boxing and AutoBoxing because convert between **Wrapper** and **primitive** can add unnecessary overhead cost. 
+
+```java
+long start = System.nanoTime();
+int sumPrimitive = 0;
+for (int i = 0; i < 1_000_000; i ++){
+    sumPrimitive += i;
+}
+long end = System.nanoTime() - start;
+System.out.println("Primitive take " + (end/1_000_000) + " ms"); // Only take 3 ms
+
+start = System.nanoTime();
+Integer sumWrapper = 0;
+for (Integer i = 0; i < 1_000_000; i ++){
+    sumWrapper += i;
+}
+end = System.nanoTime() - start;
+System.out.println("Wrapper take " + (end/1_000_000) + " ms"); // Take 27 ms
+```
 
 ## Enum
 
